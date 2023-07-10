@@ -154,8 +154,8 @@ items.getProductById(8); */
 items.deleteProduct(5); */
 
 
-/* items.getProducts();
- */
+items.getProducts();
+
 
 
 
