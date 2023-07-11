@@ -11,14 +11,31 @@ class ProductManager {
     this.path = dirName;
   } 
 
-  addProduct(product) {
-    
-    product.id = this.id++;
+  addProduct(title,description,price,thumbnail,code,stock) {
+    if (!title || !description || !price || !thumbnail || !code || !stock) {
+      console.log('Error: Todos los campos son obligatorios');
+      return;
+    }
+    const producto = {
+      id: this.id++,
+      title,
+      description,
+      price,
+      thumbnail,
+      code,
+      stock
+    }
 
-    this.products.push(product);
+    const productoExistente = this.products.find(product => product.code === code);
+    if (productoExistente) {
+      console.log('El código del producto ya existe');
+      return;
+    }
 
-
+    this.products.push(producto);
   }; 
+
+
 
   getProducts () {
 
@@ -32,27 +49,27 @@ class ProductManager {
 
         console.log('no se pudo escribir el archivo');
       }
-      
+
     }
+
     writeFile(JSON.stringify(this.products));
 
 
+    
 
+    function readProducts(fileName){
+      fs.readFile(fileName, 'utf-8', (err, data) => {
+        if (err) throw new Error('no se pudo leer el archivo');
 
-    const readProducts = async () => {
+       // console.log(data);
 
-      try {
-        
-        await fs.promises.readFile(fileName,'utf-8')
-
-      } catch (error) {
-
-        console.log('no se pudo leer el archivo');
-
-      }
+      });
     }
+    readProducts(fileName);
 
-    readProducts()
+
+    console.log(this.products);
+
 
   };
 
@@ -75,16 +92,22 @@ class ProductManager {
 
 
 
-  updateProduct(id) {
+  updateProduct(id ,title, description, price, thumbnail,code,stock) {
 
-    this.products[id]= {
-      title:'auto + contenido actualizado',
-      description:'auto increible actualizado',
-      price:1500,
-      thumbnail:'ruta-de-imagen-actualizada.jpg',
-      code:2,
-      stock: 3
+    const resultado = this.products.findIndex(product => product.id === id);
+
+      this.products[resultado]= {
+      id,
+      title,
+      description,
+      price,
+      thumbnail,
+      code,
+      stock,
     }
+
+/*     console.log(this.products);
+ */
 
   }
   
@@ -98,20 +121,13 @@ class ProductManager {
       else{
         console.log('producto no encontrado');
       }
-
   }
-
-
 }
 
 const items = new ProductManager();
 
 
-const product1 = {title:'auto',description:'auto increible', price:1000,thumbnail:'ruta-de-imagen.jpg',code:2, stock: 3};
 
-const product2 = {title:'moto',description:'moto chica', price:500,thumbnail:'ruta-de-imagen-2.jpg',code:1, stock: 2};
-
-const product3 = {title:'bici',description:'bici roja', price:200,thumbnail:'ruta-de-imagen-3.jpg',code:3, stock: 5};
 
 
 const createFile = async (path) => {
@@ -130,8 +146,15 @@ const createFile = async (path) => {
   createFile(items.path);
 
 
-/* items.addProduct(product1);
- */
+items.addProduct('auto','auto increible',1000,'ruta-de-imagen.jpg',2,3);
+
+
+
+/* items.addProduct('moto','moto chica', 500,'ruta-de-imagen-2',1,2);
+
+items.addProduct('bici', 'bici roja', 200, 'ruta-de-imagen-3',3,5); */
+
+
 
 
 /* items.addProduct(product2);
@@ -147,8 +170,8 @@ items.getProductById(5);
 items.getProductById(8); */
 
 
-/* items.updateProduct(1);
- */
+/* items.updateProduct(1,'auto actualizado','auto increible actualizado',1500,'ruta-de-imagen-actualizada.jpg',2,3); */
+
 
 /* items.deleteProduct(2);
 items.deleteProduct(5); */
